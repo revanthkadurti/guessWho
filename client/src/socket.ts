@@ -1,6 +1,14 @@
 import type { Ack, Category, ClientEvent, ClientGameState } from "./types";
 
-export const serverUrl = import.meta.env.VITE_SERVER_URL || window.location.origin;
+const configuredServerUrl = import.meta.env.VITE_SERVER_URL as string | undefined;
+const isLocalServerUrl = configuredServerUrl?.includes("localhost") || configuredServerUrl?.includes("127.0.0.1");
+
+export const serverUrl =
+  import.meta.env.DEV && configuredServerUrl
+    ? configuredServerUrl
+    : configuredServerUrl && !isLocalServerUrl
+      ? configuredServerUrl
+      : window.location.origin;
 
 type Handlers = {
   onState: (state: ClientGameState) => void;
