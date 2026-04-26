@@ -111,6 +111,22 @@ npm run deploy --workspace server
 4. Deploy.
 5. Update the backend `CLIENT_URL` to the exact Vercel URL and redeploy the Worker.
 
+## Deploy Frontend to Cloudflare Pages
+
+Use this setup for a Cloudflare-only deployment. Do not use the root `npm run build` command for Pages; that builds both workspaces and can hit Rollup optional dependency issues on Cloudflare's Linux builder.
+
+1. In Cloudflare, go to **Workers & Pages** → **Create** → **Pages** → **Connect to Git**.
+2. Select this repository.
+3. Use these settings:
+   - Framework preset: `Vite`
+   - Root directory: leave blank / repository root
+   - Build command: `npm run pages:build`
+   - Build output directory: `client/dist`
+4. Add environment variable:
+   - `VITE_SERVER_URL`: your deployed Cloudflare Worker URL
+5. Deploy.
+6. Update the backend `CLIENT_URL` in your local `server/wrangler.toml` to the exact Pages URL and redeploy the Worker.
+
 ## Deploy Frontend to Netlify
 
 1. Import the GitHub repo in Netlify.
