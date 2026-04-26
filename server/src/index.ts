@@ -82,7 +82,19 @@ export default {
     }
 
     if (env.ASSETS) {
-      return env.ASSETS.fetch(request);
+      try {
+        return await env.ASSETS.fetch(request);
+      } catch (error) {
+        return new Response(
+          `Frontend assets could not be served. Run the client build before deploying. ${error instanceof Error ? error.message : ""}`,
+          {
+            status: 500,
+            headers: {
+              "content-type": "text/plain; charset=utf-8"
+            }
+          }
+        );
+      }
     }
 
     return json({ error: "Not found" }, env, 404);
@@ -300,7 +312,7 @@ function json(body: unknown, env: Env, status = 200) {
 
 function corsHeaders(env: Env) {
   return {
-    "access-control-allow-origin": env.CLIENT_URL,
+    "access-control-allow-origin": env.CLIENT_URL || "*",
     "access-control-allow-methods": "GET,POST,OPTIONS",
     "access-control-allow-headers": "content-type"
   };

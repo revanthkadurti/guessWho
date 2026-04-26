@@ -21,4 +21,4 @@ database_name = "bollywood_guess_grid"
 database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
 
 [vars]
-CLIENT_URL = "https://your-worker-url.workers.dev"
+CLIENT_URL = "*"
