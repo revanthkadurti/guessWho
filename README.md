@@ -36,7 +36,7 @@ Copy the returned `database_id` into [server/wrangler.toml](/Users/revanthadurti
 npm run d1:migrate:local --workspace server
 ```
 
-Run the backend and frontend in separate terminals:
+Run the backend and frontend in separate terminals for development:
 
 ```bash
 npm run dev --workspace server
@@ -67,13 +67,24 @@ VITE_SERVER_URL=http://localhost:8787
 
 For production, set `VITE_SERVER_URL` to your deployed Cloudflare Worker URL, for example `https://bollywood-guess-grid-api.your-subdomain.workers.dev`.
 
-## Deploy Backend to Cloudflare
+If the frontend is served by the same Worker in production, `VITE_SERVER_URL` can be omitted and the app will use the current origin.
 
-1. Push this repository to GitHub.
-2. Install and authenticate Wrangler if needed:
+## Deploy Full App with Wrangler
+
+This is the simplest deployment path: one Cloudflare Worker serves the React frontend, API routes, WebSockets, Durable Object, and D1-backed lobby reservations.
+
+Your real [server/wrangler.toml](/Users/revanthadurti/projects/Games/GuessWho/server/wrangler.toml) is ignored by Git so database IDs are not pushed. Use [server/wrangler.example.toml](/Users/revanthadurti/projects/Games/GuessWho/server/wrangler.example.toml) as the template.
+
+1. Create your local Wrangler config if needed:
 
 ```bash
-npx wrangler login
+cp server/wrangler.example.toml server/wrangler.toml
+```
+
+2. Install and authenticate Wrangler:
+
+```bash
+npm exec --workspace server wrangler login
 ```
 
 3. Create the production D1 database:
@@ -83,7 +94,7 @@ npm exec --workspace server wrangler d1 create bollywood_guess_grid
 ```
 
 4. Copy the returned `database_id` into [server/wrangler.toml](/Users/revanthadurti/projects/Games/GuessWho/server/wrangler.toml).
-5. Set `CLIENT_URL` in [server/wrangler.toml](/Users/revanthadurti/projects/Games/GuessWho/server/wrangler.toml) to your deployed frontend URL.
+5. Set `CLIENT_URL` in [server/wrangler.toml](/Users/revanthadurti/projects/Games/GuessWho/server/wrangler.toml) to your Worker URL if you already know it, or keep the placeholder for the first deploy and update it after.
 6. Apply the remote D1 migration:
 
 ```bash
@@ -96,46 +107,15 @@ npm run d1:migrate:remote --workspace server
 npm run deploy --workspace server
 ```
 
-8. Copy the deployed Worker URL. That is your backend URL.
+The deploy script builds `client/dist` first, then deploys the Worker with static assets from that folder.
 
-## Deploy Frontend to Vercel
+8. Open the Worker URL. That is now the public game URL.
 
-1. In Vercel, import the GitHub repo.
-2. Use these settings:
-   - Framework Preset: `Vite`
-   - Root Directory: `client`
-   - Build Command: `npm run build`
-   - Output Directory: `dist`
-3. Add environment variable:
-   - `VITE_SERVER_URL`: your deployed Cloudflare Worker URL
-4. Deploy.
-5. Update the backend `CLIENT_URL` to the exact Vercel URL and redeploy the Worker.
+9. If you changed `CLIENT_URL` after seeing the Worker URL, redeploy once more:
 
-## Deploy Frontend to Cloudflare Pages
-
-Use this setup for a Cloudflare-only deployment. Do not use the root `npm run build` command for Pages; that builds both workspaces and can hit Rollup optional dependency issues on Cloudflare's Linux builder.
-
-1. In Cloudflare, go to **Workers & Pages** → **Create** → **Pages** → **Connect to Git**.
-2. Select this repository.
-3. Use these settings:
-   - Framework preset: `Vite`
-   - Root directory: leave blank / repository root
-   - Build command: `npm run pages:build`
-   - Build output directory: `client/dist`
-4. Add environment variable:
-   - `VITE_SERVER_URL`: your deployed Cloudflare Worker URL
-5. Deploy.
-6. Update the backend `CLIENT_URL` in your local `server/wrangler.toml` to the exact Pages URL and redeploy the Worker.
-
-## Deploy Frontend to Netlify
-
-1. Import the GitHub repo in Netlify.
-2. Use:
-   - Base Directory: `client`
-   - Build Command: `npm run build`
-   - Publish Directory: `client/dist`
-3. Add `VITE_SERVER_URL` with your deployed Cloudflare Worker URL.
-4. Deploy, then set the backend `CLIENT_URL` to the Netlify URL and redeploy the Worker.
+```bash
+npm run deploy --workspace server
+```
 
 ## Sharing a Game
 

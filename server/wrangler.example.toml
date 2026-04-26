@@ -1,0 +1,24 @@
+name = "guess-who"
+main = "src/index.ts"
+compatibility_date = "2026-04-25"
+
+[assets]
+directory = "../client/dist"
+binding = "ASSETS"
+not_found_handling = "single-page-application"
+
+[[durable_objects.bindings]]
+name = "LOBBY_OBJECT"
+class_name = "LobbyDurableObject"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["LobbyDurableObject"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "bollywood_guess_grid"
+database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+
+[vars]
+CLIENT_URL = "https://your-worker-url.workers.dev"

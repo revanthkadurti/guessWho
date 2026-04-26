@@ -23,6 +23,7 @@ import type { CategoryId, Lobby, TeamId } from "./types.js";
 export interface Env {
   LOBBY_OBJECT: DurableObjectNamespace;
   DB: D1Database;
+  ASSETS?: Fetcher;
   CLIENT_URL: string;
 }
 
@@ -78,6 +79,10 @@ export default {
       const code = match[1].toUpperCase();
       const id = env.LOBBY_OBJECT.idFromName(code);
       return env.LOBBY_OBJECT.get(id).fetch(request);
+    }
+
+    if (env.ASSETS) {
+      return env.ASSETS.fetch(request);
     }
 
     return json({ error: "Not found" }, env, 404);

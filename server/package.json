@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "wrangler dev",
     "build": "tsc --noEmit",
-    "deploy": "wrangler deploy",
+    "deploy": "npm --prefix ../client run build && npm run build && wrangler deploy",
     "d1:migrate:local": "wrangler d1 migrations apply bollywood_guess_grid --local",
     "d1:migrate:remote": "wrangler d1 migrations apply bollywood_guess_grid --remote"
   },
