@@ -222,8 +222,9 @@ export function makeFinalGuess(lobby: Lobby, playerId: string, itemId: string) {
 
 export function restartGame(lobby: Lobby, playerId: string) {
   if (lobby.hostId !== playerId) throw new Error("Only the host can restart the game.");
-  lobby.phase = "secret-selection";
+  lobby.phase = "lobby";
   lobby.winner = null;
+  lobby.resultRecorded = false;
   lobby.turn = "teamA";
   lobby.gameGrid = categoryItems(lobby.selectedCategory);
   for (const team of Object.values(lobby.teams)) {

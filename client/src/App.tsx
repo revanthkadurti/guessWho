@@ -159,7 +159,7 @@ export default function App() {
             )}
             {state.selfId === state.hostId && state.phase === "finished" && (
               <button className="btn btn-primary" onClick={() => emit("restartGame")}>
-                <RefreshCw size={17} /> Restart
+                <RefreshCw size={17} /> New Game
               </button>
             )}
           </div>
@@ -316,6 +316,7 @@ function CreditsPage({ categories, error }: { categories: Category[]; error: str
 function CategorySelector({ state, onEmit }: { state: ClientGameState; onEmit: (event: ClientEvent, payload?: Record<string, unknown>) => void }) {
   const locked = state.phase !== "lobby";
   const isHost = state.selfId === state.hostId;
+  const selectedCategory = state.categories.find((category) => category.id === state.selectedCategory);
 
   return (
     <section className="rounded-lg border border-white/10 bg-white/5 p-4">
@@ -326,18 +327,25 @@ function CategorySelector({ state, onEmit }: { state: ClientGameState; onEmit: (
         </div>
         <Grid2X2 className="text-amber-300" size={20} />
       </div>
+      <div className="mt-3 rounded-md border border-amber-300/35 bg-amber-300/10 px-3 py-2">
+        <p className="text-xs uppercase tracking-[0.18em] text-amber-200">Current</p>
+        <p className="font-black text-white">{selectedCategory?.name ?? state.selectedCategoryName}</p>
+      </div>
       <div className="mt-3 grid gap-2">
         {state.categories.map((category) => {
           const selected = category.id === state.selectedCategory;
           return (
             <button
               key={category.id}
+              type="button"
               className={`category-option ${selected ? "category-option-selected" : ""}`}
-              disabled={!isHost || locked}
+              aria-pressed={selected}
+              disabled={locked}
               onClick={() => onEmit("updateCategory", { categoryId: category.id })}
             >
               <span className="font-black">{category.name}</span>
               <span className="text-xs leading-5 text-stone-400">{category.description}</span>
+              {!isHost && !locked && <span className="text-xs font-bold text-amber-200">Only host can change</span>}
             </button>
           );
         })}
