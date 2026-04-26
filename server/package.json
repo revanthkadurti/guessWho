@@ -1,0 +1,20 @@
+{
+  "name": "bollywood-guess-grid-server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "build": "tsc --noEmit",
+    "deploy": "wrangler deploy",
+    "d1:migrate:local": "wrangler d1 migrations apply bollywood_guess_grid --local",
+    "d1:migrate:remote": "wrangler d1 migrations apply bollywood_guess_grid --remote"
+  },
+  "dependencies": {
+    "@cloudflare/workers-types": "^4.20260417.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5",
+    "wrangler": "^3.114.14"
+  }
+}

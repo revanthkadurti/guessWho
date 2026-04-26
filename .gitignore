@@ -1,0 +1,30 @@
+# Dependencies
+node_modules
+
+# Build output
+dist
+client/dist
+server/dist
+
+# Local environment files and secrets
+.env
+.env.*
+client/.env
+client/.env.*
+server/.env
+server/.env.*
+.dev.vars
+server/.dev.vars
+
+# Keep example env files trackable
+!.env.example
+!client/.env.example
+!server/.env.example
+
+# Cloudflare local/deploy state and config with account/database ids
+.wrangler
+server/.wrangler
+server/wrangler.toml
+
+# OS/editor noise
+.DS_Store
